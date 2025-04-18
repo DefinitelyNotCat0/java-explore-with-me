@@ -10,6 +10,7 @@ import ru.practicum.explore_with_me.stat.server.service.StatService;
 import ru.practicum.explore_with_me.stats.constant.StatConstants;
 import ru.practicum.explore_with_me.stats.dto.AppUriHitCountDto;
 import ru.practicum.explore_with_me.stats.dto.HitAddRequestDto;
+import ru.practicum.explore_with_me.stats.dto.HitDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,8 +24,8 @@ public class StatController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addHit(@RequestBody @Valid HitAddRequestDto hitAddRequestDto) {
-        statService.add(hitAddRequestDto);
+    public HitDto addHit(@RequestBody @Valid HitAddRequestDto hitAddRequestDto) {
+        return statService.addHit(hitAddRequestDto);
     }
 
     @GetMapping("/stats")
@@ -33,7 +34,7 @@ public class StatController {
             @RequestParam @NotNull @DateTimeFormat(pattern = StatConstants.DATE_TIME_FORMAT) LocalDateTime start,
             @RequestParam @NotNull @DateTimeFormat(pattern = StatConstants.DATE_TIME_FORMAT) LocalDateTime end,
             @RequestParam(required = false) List<String> uris,
-            @RequestParam(required = false, defaultValue = "false") boolean unique) {
+            @RequestParam(defaultValue = "false") boolean unique) {
         return statService.getAppUriHitCountStatistic(start, end, uris, unique);
     }
 }

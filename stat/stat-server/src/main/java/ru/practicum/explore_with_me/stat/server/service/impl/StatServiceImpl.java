@@ -13,6 +13,7 @@ import ru.practicum.explore_with_me.stat.server.dao.repository.HitRepository;
 import ru.practicum.explore_with_me.stat.server.service.StatService;
 import ru.practicum.explore_with_me.stats.dto.AppUriHitCountDto;
 import ru.practicum.explore_with_me.stats.dto.HitAddRequestDto;
+import ru.practicum.explore_with_me.stats.dto.HitDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,10 +30,11 @@ public class StatServiceImpl implements StatService {
 
     @Override
     @Transactional
-    public void add(HitAddRequestDto hitDto) {
+    public HitDto addHit(HitAddRequestDto hitDto) {
         HitEntity hitEntity = hitMapper.toHitEntity(hitDto);
         hitRepository.save(hitEntity);
         log.debug("Hit was created with id = {}", hitEntity.getId());
+        return hitMapper.toHitDto(hitEntity);
     }
 
     @Override

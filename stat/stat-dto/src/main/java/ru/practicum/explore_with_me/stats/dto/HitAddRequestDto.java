@@ -1,6 +1,8 @@
 package ru.practicum.explore_with_me.stats.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,16 +16,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class HitAddRequestDto {
 
-    //@NotBlank
+    @NotBlank
     private String app;
 
-    //@NotBlank
+    @NotBlank
     private String uri;
 
-    //@NotBlank
+    @NotBlank
     private String ip;
 
-    //@NotNull
+    @NotNull
     @DateTimeFormat(pattern = StatConstants.DATE_TIME_FORMAT)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StatConstants.DATE_TIME_FORMAT)
     private LocalDateTime timestamp;

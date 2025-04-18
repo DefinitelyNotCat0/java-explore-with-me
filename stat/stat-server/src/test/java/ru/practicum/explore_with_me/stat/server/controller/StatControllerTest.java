@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.explore_with_me.stat.server.service.StatService;
 import ru.practicum.explore_with_me.stats.dto.AppUriHitCountDto;
 import ru.practicum.explore_with_me.stats.dto.HitAddRequestDto;
+import ru.practicum.explore_with_me.stats.dto.HitDto;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -19,7 +20,6 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -65,7 +65,8 @@ class StatControllerTest {
 
     @Test
     void addHit() throws Exception {
-        doNothing().when(statService).add(any());
+        when(statService.addHit(any()))
+                .thenReturn(new HitDto());
 
         mvc.perform(post("/hit")
                         .content(mapper.writeValueAsString(hitAddRequestDto1))

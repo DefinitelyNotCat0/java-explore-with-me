@@ -17,10 +17,10 @@ public class HitEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "app")
+    @Column(name = "app", nullable = false)
     private String app;
 
-    @Column(name = "uri")
+    @Column(name = "uri", nullable = false)
     private String uri;
 
     @Column(name = "ip")
