@@ -1,5 +1,6 @@
 package ru.practicum.explore_with_me.main.service.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -7,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore_with_me.main.constant.MainServiceConstants;
+import ru.practicum.explore_with_me.main.constant.EventConstants;
 import ru.practicum.explore_with_me.main.dao.converter.EventMapper;
 import ru.practicum.explore_with_me.main.dao.entity.CategoryEntity;
 import ru.practicum.explore_with_me.main.dao.entity.EventEntity;
@@ -41,7 +42,8 @@ public class EventServiceImpl implements EventService {
     private final StatsService statsService;
 
     @Override
-    public List<EventDto> getEventList(EventSearchParamDto searchParamDto) {
+    public List<EventDto> getEventList(EventSearchParamDto searchParamDto,
+                                       HttpServletRequest request) {
         log.debug("Get events by search param");
         if (searchParamDto.getRangeStart() != null && searchParamDto.getRangeEnd() != null &&
                 searchParamDto.getRangeStart().isAfter(searchParamDto.getRangeEnd())) {
@@ -64,28 +66,31 @@ public class EventServiceImpl implements EventService {
 
         Set<String> uris = new HashSet<>();
         for (EventEntity event : eventEntityList) {
-            uris.add(MainServiceConstants.EVENT_URL_PATH + event.getId());
+            uris.add(EventConstants.URL_PATH + event.getId());
         }
         Map<String, Integer> hitCountStatistic = statsService.getAppUriHitCountStatistic(uris);
         Comparator<EventDto> comparator = EventSort.EVENT_DATE.equals(searchParamDto.getSort()) ?
                 Comparator.comparing(EventDto::getEventDate) : Comparator.comparing(EventDto::getViews);
+
+        statsService.addHit(request.getRequestURI(), request.getRemoteAddr());
         return eventEntityList.stream()
                 .map(event -> eventMapper.toEventDto(
-                        event, MainServiceConstants.EVENT_URL_PATH, hitCountStatistic))
+                        event, EventConstants.URL_PATH, hitCountStatistic))
                 .sorted(comparator)
                 .toList();
     }
 
     @Override
-    public EventDto getEventById(Long id) {
+    public EventDto getEventById(Long id, HttpServletRequest request) {
         log.debug("Get event with id = {}", id);
         EventEntity eventEntity = eventRepository.findByIdAndState(id, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Event not found with id = " + id));
 
-        String uri = MainServiceConstants.EVENT_URL_PATH + eventEntity.getId();
+        String uri = EventConstants.URL_PATH + eventEntity.getId();
+        statsService.addHit(request.getRequestURI(), request.getRemoteAddr());
         return eventMapper.toEventDto(
                 eventEntity,
-                MainServiceConstants.EVENT_URL_PATH,
+                EventConstants.URL_PATH,
                 statsService.getUniqueAppUriHitCountStatistic(Set.of(uri))
         );
     }
@@ -100,12 +105,12 @@ public class EventServiceImpl implements EventService {
         List<EventEntity> eventEntityList = eventRepository.findAllByInitiator_Id(userId, pageable);
         Set<String> uris = new HashSet<>();
         for (EventEntity event : eventEntityList) {
-            uris.add(MainServiceConstants.EVENT_URL_PATH + event.getId());
+            uris.add(EventConstants.URL_PATH + event.getId());
         }
         Map<String, Integer> hitCountStatistic = statsService.getAppUriHitCountStatistic(uris);
         return eventEntityList.stream()
                 .map(event -> eventMapper.toEventDto(
-                        event, MainServiceConstants.EVENT_URL_PATH, hitCountStatistic))
+                        event, EventConstants.URL_PATH, hitCountStatistic))
                 .toList();
     }
 
@@ -132,10 +137,10 @@ public class EventServiceImpl implements EventService {
         EventEntity eventEntity = eventRepository.findByIdAndInitiator_Id(id, userId)
                 .orElseThrow(() -> new NotFoundException("Event not found with id = " + id));
 
-        String uri = MainServiceConstants.EVENT_URL_PATH + eventEntity.getId();
+        String uri = EventConstants.URL_PATH + eventEntity.getId();
         return eventMapper.toEventDto(
                 eventEntity,
-                MainServiceConstants.EVENT_URL_PATH,
+                EventConstants.URL_PATH,
                 statsService.getUniqueAppUriHitCountStatistic(Set.of(uri))
         );
     }
@@ -171,10 +176,10 @@ public class EventServiceImpl implements EventService {
         }
 
         log.debug("Private event request with id = {} was updated", id);
-        String uri = MainServiceConstants.EVENT_URL_PATH + eventEntity.getId();
+        String uri = EventConstants.URL_PATH + eventEntity.getId();
         return eventMapper.toEventDto(
                 eventEntity,
-                MainServiceConstants.EVENT_URL_PATH,
+                EventConstants.URL_PATH,
                 statsService.getAppUriHitCountStatistic(Set.of(uri))
         );
     }
@@ -197,12 +202,12 @@ public class EventServiceImpl implements EventService {
 
         Set<String> uris = new HashSet<>();
         for (EventEntity event : eventEntityList) {
-            uris.add(MainServiceConstants.EVENT_URL_PATH + event.getId());
+            uris.add(EventConstants.URL_PATH + event.getId());
         }
         Map<String, Integer> hitCountStatistic = statsService.getAppUriHitCountStatistic(uris);
         return eventEntityList.stream()
                 .map(event -> eventMapper.toEventDto(
-                        event, MainServiceConstants.EVENT_URL_PATH, hitCountStatistic))
+                        event, EventConstants.URL_PATH, hitCountStatistic))
                 .toList();
     }
 
@@ -231,10 +236,10 @@ public class EventServiceImpl implements EventService {
         }
 
         log.debug("Event with id = {} was updated by admin", id);
-        String uri = MainServiceConstants.EVENT_URL_PATH + eventEntity.getId();
+        String uri = EventConstants.URL_PATH + eventEntity.getId();
         return eventMapper.toEventDto(
                 eventEntity,
-                MainServiceConstants.EVENT_URL_PATH,
+                EventConstants.URL_PATH,
                 statsService.getAppUriHitCountStatistic(Set.of(uri))
         );
     }

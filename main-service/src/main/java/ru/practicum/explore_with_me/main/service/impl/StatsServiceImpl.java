@@ -1,5 +1,6 @@
 package ru.practicum.explore_with_me.main.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @ComponentScan(basePackages = "ru.practicum")
@@ -33,11 +35,13 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Map<String, Integer> getAppUriHitCountStatistic(Set<String> uris) {
+        log.debug("Get app uri hit count statistic");
         return getHitCountStatistic(uris, false);
     }
 
     @Override
     public Map<String, Integer> getUniqueAppUriHitCountStatistic(Set<String> uris) {
+        log.debug("Get unique app uri hit count statistic");
         return getHitCountStatistic(uris, true);
     }
 
@@ -50,9 +54,11 @@ public class StatsServiceImpl implements StatsService {
         request.setTimestamp(LocalDateTime.now());
 
         statClient.addHit(request);
+        log.debug("New hit was added");
     }
 
     private Map<String, Integer> getHitCountStatistic(Set<String> uris, boolean unique) {
+        log.debug("Get app uri hit count statistic with uris = {}", uris);
         List<AppUriHitCountDto> hits = statClient.getAppUriHitCountStatistic(
                 MainServiceConstants.DATE_TIME_MIN,
                 LocalDateTime.now(),

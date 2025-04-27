@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import ru.practicum.explore_with_me.main.service.EventService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @Validated
 @RequestMapping("/users/{userId}/events")
@@ -33,6 +35,7 @@ public class EventPrivateController {
                                               @RequestParam(value = "from", defaultValue = "0")
                                               @PositiveOrZero int from,
                                               @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
+        log.debug("Controller: getPrivateEventList");
         return eventService.getPrivateEventList(userId, from, size);
     }
 
@@ -40,12 +43,14 @@ public class EventPrivateController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventDto createPrivateEvent(@PathVariable @Positive Long userId,
                                        @RequestBody @Valid EventPrivateCreateRequestDto dto) {
+        log.debug("Controller: createPrivateEvent");
         return eventService.createPrivateEvent(userId, dto);
     }
 
     @GetMapping("/{eventId}")
     public EventDto getPrivateEventById(@PathVariable @Positive Long userId,
                                         @PathVariable @Positive Long eventId) {
+        log.debug("Controller: getPrivateEventById");
         return eventService.getPrivateEventById(eventId, userId);
     }
 
@@ -53,12 +58,14 @@ public class EventPrivateController {
     public EventDto updatePrivateEvent(@PathVariable @Positive Long userId,
                                        @PathVariable @Positive Long eventId,
                                        @RequestBody @Valid EventUpdateRequestDto dto) {
+        log.debug("Controller: updatePrivateEvent");
         return eventService.updatePrivateEvent(eventId, userId, dto);
     }
 
     @GetMapping("/{eventId}/requests")
     public List<EventRequestDto> getPrivateEventRequestListByEventId(@PathVariable @Positive Long userId,
                                                                      @PathVariable @Positive Long eventId) {
+        log.debug("Controller: getPrivateEventRequestListByEventId");
         return eventRequestService.getPrivateEventRequestListByEventId(eventId, userId);
     }
 
@@ -66,6 +73,7 @@ public class EventPrivateController {
     public EventRequestsPrivateUpdateResultDto updatePrivateEventRequests(@PathVariable @Positive Long userId,
                                                                           @PathVariable @Positive Long eventId,
                                                                           @RequestBody @Valid EventRequestsPrivateUpdateRequestDto dto) {
+        log.debug("Controller: updatePrivateEventRequests");
         return eventRequestService.updatePrivateEventRequests(eventId, userId, dto);
     }
 }

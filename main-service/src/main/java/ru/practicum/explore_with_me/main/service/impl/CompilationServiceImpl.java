@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import ru.practicum.explore_with_me.main.constant.MainServiceConstants;
+import ru.practicum.explore_with_me.main.constant.EventConstants;
 import ru.practicum.explore_with_me.main.dao.converter.CompilationMapper;
 import ru.practicum.explore_with_me.main.dao.entity.CompilationEntity;
 import ru.practicum.explore_with_me.main.dao.entity.EventEntity;
@@ -121,7 +121,7 @@ public class CompilationServiceImpl implements CompilationService {
         Set<String> uris = new HashSet<>();
         for (CompilationEntity compilationEntity : compilationEntityList) {
             for (EventEntity eventEntity : compilationEntity.getEvents()) {
-                uris.add(MainServiceConstants.EVENT_URL_PATH + eventEntity.getId());
+                uris.add(EventConstants.URL_PATH + eventEntity.getId());
             }
         }
         if (uris.isEmpty()) {
@@ -132,7 +132,7 @@ public class CompilationServiceImpl implements CompilationService {
                 .stream()
                 .collect(Collectors.toMap(e ->
                                 Long.valueOf(e.getKey()
-                                        .replace(MainServiceConstants.EVENT_URL_PATH, "")),
+                                        .replace(EventConstants.URL_PATH, "")),
                         Map.Entry::getValue)
                 );
     }

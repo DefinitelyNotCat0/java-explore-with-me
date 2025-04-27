@@ -55,8 +55,9 @@ public class EventRequestServiceImpl implements EventRequestService {
 
     @Override
     @Transactional
-    public EventRequestsPrivateUpdateResultDto
-    updatePrivateEventRequests(Long eventId, Long userId, EventRequestsPrivateUpdateRequestDto dto) {
+    public EventRequestsPrivateUpdateResultDto updatePrivateEventRequests(Long eventId,
+                                                                          Long userId,
+                                                                          EventRequestsPrivateUpdateRequestDto dto) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User not found with id = " + userId);
         }
