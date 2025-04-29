@@ -1,5 +1,6 @@
 package ru.practicum.explore_with_me.stat.server.service.impl;
 
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,10 @@ public class StatServiceImpl implements StatService {
                                                               LocalDateTime end,
                                                               List<String> uriList,
                                                               boolean isUnique) {
+        if (start.isAfter(end)) {
+            throw new ValidationException("Start date is after end date");
+        }
+
         List<AppUriHitCountEntity> appUriHitCountEntityList;
         if (ObjectUtils.isEmpty(uriList)) {
             if (isUnique) {

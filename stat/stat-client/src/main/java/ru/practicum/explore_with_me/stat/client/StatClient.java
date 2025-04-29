@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class StatClient {
@@ -24,9 +25,7 @@ public class StatClient {
 
     private final WebClient webClient;
 
-    StatClient(
-            @Value("${stat-server.url}") String serverUri
-    ) {
+    StatClient(@Value("${stat.server.url}") String serverUri) {
         this.webClient = WebClient.builder()
                 .baseUrl(serverUri)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +45,7 @@ public class StatClient {
 
     public List<AppUriHitCountDto> getAppUriHitCountStatistic(LocalDateTime start,
                                                               LocalDateTime end,
-                                                              List<String> uriList,
+                                                              Set<String> uriList,
                                                               boolean isUnique) {
         Optional<String> urisOptional = ObjectUtils.isEmpty(uriList) ?
                 Optional.empty() :
