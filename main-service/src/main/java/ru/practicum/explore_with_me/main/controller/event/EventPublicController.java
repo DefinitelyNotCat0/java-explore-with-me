@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.explore_with_me.main.dto.event.EventDto;
 import ru.practicum.explore_with_me.main.dto.event.EventSearchParamDto;
 import ru.practicum.explore_with_me.main.service.EventService;
-import ru.practicum.explore_with_me.main.service.StatsService;
 
 import java.util.List;
 
@@ -24,7 +23,6 @@ import java.util.List;
 public class EventPublicController {
 
     private final EventService eventService;
-    private final StatsService statsService;
 
     @GetMapping
     public List<EventDto> getEventList(@Valid EventSearchParamDto eventSearchParamDto, HttpServletRequest request) {
